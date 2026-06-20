@@ -29,8 +29,8 @@ class Config:
     DATA_DIR = BASE_DIR / "data"
     LOGS_DIR = BASE_DIR / "logs"
     
-    # Discord
-    DISCORD_TOKEN = os.getenv("DISCORD_TOKEN")
+    # Discord — obligatoire, lève une erreur au démarrage si absent
+    DISCORD_TOKEN = _require_env("DISCORD_TOKEN")
     COMMAND_PREFIX = os.getenv("COMMAND_PREFIX", "!")
     
     # Base de données
@@ -64,14 +64,12 @@ class Config:
     
     @classmethod
     def validate(cls) -> bool:
-        """Valide la configuration"""
-        if not cls.DISCORD_TOKEN:
-            raise ValueError("DISCORD_TOKEN manquant dans les variables d'environnement")
-        
+        """Valide la configuration et crée les dossiers requis"""
+        # DISCORD_TOKEN est déjà garanti par _require_env() à la définition de la classe.
         # Créer les dossiers nécessaires
         cls.DATA_DIR.mkdir(exist_ok=True)
         cls.LOGS_DIR.mkdir(exist_ok=True)
-        
+
         return True
     
     @classmethod

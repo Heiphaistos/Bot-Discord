@@ -14,6 +14,8 @@ from functools import wraps
 from flask import Flask, request, render_template_string, jsonify, session, redirect, url_for, flash
 from werkzeug.security import generate_password_hash, check_password_hash
 import aiosqlite
+import time
+import threading
 
 from config import Config
 from database import db_manager
@@ -25,6 +27,25 @@ logger = setup_logging()
 app = Flask(__name__)
 app.secret_key = Config.INTERFACE_SECRET
 app.config['PERMANENT_SESSION_LIFETIME'] = 3600  # 1 heure
+
+# ── Rate limiting login ────────────────────────────────────────────────────────
+_login_attempts: dict = {}   # ip -> [timestamps]
+_login_lock = threading.Lock()
+_LOGIN_MAX = 5        # tentatives max
+_LOGIN_WINDOW = 300   # fenêtre en secondes (5 minutes)
+
+
+def _login_is_rate_limited(ip: str) -> bool:
+    """Retourne True si l'IP a dépassé la limite de tentatives de connexion."""
+    now = time.time()
+    with _login_lock:
+        attempts = [t for t in _login_attempts.get(ip, []) if now - t < _LOGIN_WINDOW]
+        _login_attempts[ip] = attempts
+        if len(attempts) >= _LOGIN_MAX:
+            return True
+        attempts.append(now)
+        _login_attempts[ip] = attempts
+    return False
 
 # Heure de démarrage de l'interface (pour l'uptime)
 START_TIME = datetime.now()
@@ -402,8 +423,14 @@ def index():
 @app.route('/login', methods=['GET', 'POST'])
 def login():
     if request.method == 'POST':
+        ip = request.remote_addr or 'unknown'
+        if _login_is_rate_limited(ip):
+            flash(f'Trop de tentatives. Réessayez dans {_LOGIN_WINDOW // 60} minutes.', 'error')
+            logger.warning(f"Login rate-limited pour IP {ip}")
+            return render_template('login.html')
+
         password = request.form.get('password', '')
-        
+
         if check_password_hash(ADMIN_PASSWORD_HASH, password):
             session['logged_in'] = True
             session['login_time'] = datetime.now().isoformat()
@@ -411,8 +438,8 @@ def login():
             return redirect(url_for('dashboard'))
         else:
             flash('Mot de passe incorrect.', 'error')
-            logger.warning(f"Tentative de connexion échouée depuis {request.remote_addr}")
-    
+            logger.warning(f"Tentative de connexion échouée depuis {ip}")
+
     return render_template('login.html')
 
 @app.route('/logout')
