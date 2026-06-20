@@ -17,7 +17,7 @@ from discord.ext import commands
 from config import Config
 from database import db_manager
 from utils.logger import bot_logger
-from utils.security import require_permissions, rate_limit, input_validator
+from utils.security import require_permissions, rate_limit, input_validator, SafeCalculator
 
 class AdvancedUtilsCog(commands.Cog):
     """Utilitaires avancés et commandes diverses"""
@@ -346,34 +346,22 @@ class AdvancedUtilsCog(commands.Cog):
         try:
             # Remplacer les fonctions communes
             expression = expression.replace("^", "**")
-            
-            # Fonctions mathématiques autorisées
-            safe_dict = {
-                "__builtins__": {},
-                "abs": abs, "round": round, "min": min, "max": max,
-                "sum": sum, "pow": pow,
-                "sin": math.sin, "cos": math.cos, "tan": math.tan,
-                "sqrt": math.sqrt, "log": math.log, "log10": math.log10,
-                "pi": math.pi, "e": math.e,
-                "ceil": math.ceil, "floor": math.floor,
-                "factorial": math.factorial
-            }
-            
-            result = eval(expression, safe_dict, {})
-            
+
+            result = SafeCalculator.safe_eval(expression)
+
             embed = discord.Embed(
                 title="🔢 Calculateur Avancé",
                 color=discord.Color.green()
             )
             embed.add_field(name="Expression", value=f"```{expression}```", inline=False)
             embed.add_field(name="Résultat", value=f"**{result}**", inline=False)
-            
+
             # Si c'est un float, montrer aussi la version arrondie
             if isinstance(result, float) and not result.is_integer():
                 embed.add_field(name="Arrondi", value=f"≈ {round(result, 6)}", inline=True)
-                
+
             await interaction.response.send_message(embed=embed)
-            
+
         except Exception as e:
             await interaction.response.send_message(f"❌ Erreur de calcul: {str(e)[:100]}")
 

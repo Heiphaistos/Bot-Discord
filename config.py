@@ -12,6 +12,15 @@ try:
 except ImportError:
     print("Avertissement: python-dotenv non installé. Les variables d'environnement du fichier .env ne seront pas chargées.")
 
+
+def _require_env(key: str) -> str:
+    """Retourne la valeur d'une variable d'environnement obligatoire ou lève une erreur."""
+    val = os.environ.get(key)
+    if not val:
+        raise RuntimeError(f"La variable d'environnement obligatoire '{key}' n'est pas définie")
+    return val
+
+
 class Config:
     """Configuration principale du bot"""
     
@@ -28,8 +37,8 @@ class Config:
     DATABASE_URL = os.getenv("DATABASE_URL", f"sqlite:///{DATA_DIR}/bot.db")
     
     # Interface web
-    INTERFACE_SECRET = os.getenv("INTERFACE_SECRET", "change-me-in-production")
-    INTERFACE_PASSWORD = os.getenv("INTERFACE_PASSWORD", "admin123")
+    INTERFACE_SECRET = _require_env("INTERFACE_SECRET")
+    INTERFACE_PASSWORD = _require_env("INTERFACE_PASSWORD")
     INTERFACE_HOST = os.getenv("INTERFACE_HOST", "127.0.0.1")
     INTERFACE_PORT = int(os.getenv("INTERFACE_PORT", "5000"))
     

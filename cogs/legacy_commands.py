@@ -16,7 +16,7 @@ from discord.ext import commands
 from config import Config
 from database import db_manager
 from utils.logger import bot_logger
-from utils.security import require_permissions, rate_limit, input_validator
+from utils.security import require_permissions, rate_limit, input_validator, SafeCalculator
 
 try:
     import feedparser
@@ -528,26 +528,19 @@ class LegacyCommandsCog(commands.Cog):
     async def calcul(self, interaction: discord.Interaction, expression: str):
         """Calculateur simple et sécurisé"""
         try:
-            # Sécuriser l'expression (enlever les caractères dangereux)
-            allowed_chars = "0123456789+-*/()., "
-            if not all(c in allowed_chars for c in expression):
-                await interaction.response.send_message("❌ Expression invalide. Utilisez seulement des nombres et +, -, *, /, ().")
-                return
-                
-            # Évaluer de manière sécurisée
-            result = eval(expression, {"__builtins__": {}}, {})
-            
+            result = SafeCalculator.safe_eval(expression)
+
             embed = discord.Embed(
                 title="🔢 Calculateur",
                 color=discord.Color.green()
             )
             embed.add_field(name="Expression", value=f"`{expression}`", inline=False)
             embed.add_field(name="Résultat", value=f"**{result}**", inline=False)
-            
+
             await interaction.response.send_message(embed=embed)
-            
-        except Exception as e:
-            await interaction.response.send_message(f"❌ Erreur de calcul: Expression invalide.")
+
+        except Exception:
+            await interaction.response.send_message("❌ Erreur de calcul: Expression invalide.")
 
     # === RSS (si feedparser disponible) ===
     

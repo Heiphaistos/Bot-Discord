@@ -26,6 +26,11 @@ class ConfigurationCog(commands.Cog):
     @app_commands.command(name="prefix", description="Change le préfixe")
     @require_permissions("admin")
     async def prefix(self, interaction: discord.Interaction, nouveau: str):
+        if not nouveau or len(nouveau) > 10 or any(c in nouveau for c in ' @#`'):
+            await interaction.response.send_message(
+                "❌ Préfixe invalide (1-10 chars, pas de @#` ou espaces)", ephemeral=True
+            )
+            return
         await interaction.response.send_message(f"✅ Préfixe changé: {nouveau}")
 
     @app_commands.command(name="language", description="Change la langue")
