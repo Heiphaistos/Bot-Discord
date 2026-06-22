@@ -16,8 +16,22 @@ from database import db_manager
 from utils.logger import setup_logging, bot_logger
 from utils.security import SecurityError
 
-# Configuration du logging
 logger = setup_logging()
+
+
+class GuildFallbackTree(discord.app_commands.CommandTree):
+    """CommandTree qui redirige add_command vers un guild quand guild_scope est activé.
+    Permet de charger les cogs en dépassement de la limite de 100 commandes globales."""
+
+    def __init__(self, *args, **kwargs):
+        super().__init__(*args, **kwargs)
+        self.guild_scope: Optional[discord.Object] = None
+
+    def add_command(self, command, *, guild=None, guilds=(), override=False):
+        if self.guild_scope is not None and guild is None and not guilds:
+            guild = self.guild_scope
+        return super().add_command(command, guild=guild, guilds=guilds, override=override)
+
 
 class DiscordBot(commands.Bot):
     """Classe principale du bot Discord"""
@@ -33,9 +47,10 @@ class DiscordBot(commands.Bot):
         super().__init__(
             command_prefix=self._get_prefix,
             intents=intents,
-            help_command=None,  # On utilise notre propre commande help
+            help_command=None,
             case_insensitive=True,
-            strip_after_prefix=True
+            strip_after_prefix=True,
+            tree_cls=GuildFallbackTree,
         )
         
         # État du bot
@@ -134,16 +149,17 @@ class DiscordBot(commands.Bot):
                 logger.info(f"✅ Cog global: {cog}")
             except discord.app_commands.CommandLimitReached:
                 if guild_obj:
+                    # Active le scope guild sur le tree pour ce chargement
+                    self.tree.guild_scope = guild_obj
                     try:
-                        # Enregistre les commandes de ce cog en scope guild
                         await self.load_extension(cog)
-                        for cmd in self.tree.get_commands():
-                            self.tree.add_command(cmd, guild=guild_obj, override=True)
                         loaded_guild += 1
                         self._guild_cogs.append(cog)
-                        logger.info(f"✅ Cog guild: {cog}")
+                        logger.info(f"✅ Cog guild ({Config.GUILD_ID}): {cog}")
                     except Exception as eg:
                         logger.error(f"❌ Erreur chargement guild {cog}: {eg}")
+                    finally:
+                        self.tree.guild_scope = None
                 else:
                     logger.warning(f"⚠️ Cog ignoré (limite 100 slash, GUILD_ID non défini): {cog}")
             except Exception as e:
