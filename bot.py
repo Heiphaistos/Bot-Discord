@@ -96,7 +96,6 @@ class DiscordBot(commands.Bot):
             'cogs.economy',
             'cogs.moderation',
             'cogs.games',
-            'cogs.legacy_commands',
             'cogs.advanced_utils',
             'cogs.fun_extras',
             'cogs.tickets',

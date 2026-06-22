@@ -1,7 +1,7 @@
 #!/bin/sh
 
-echo "[bot-discord] Starting web interface..."
-python web_interface.py &
+echo "[bot-discord] Starting web interface (gunicorn)..."
+gunicorn web_interface:app --bind 0.0.0.0:5000 --workers 2 --timeout 60 --access-logfile - &
 WEB_PID=$!
 
 echo "[bot-discord] Starting Discord bot (auto-restart on failure)..."
