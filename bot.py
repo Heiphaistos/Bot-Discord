@@ -147,9 +147,10 @@ class DiscordBot(commands.Bot):
                 await self.load_extension(cog)
                 loaded_global += 1
                 logger.info(f"✅ Cog global: {cog}")
-            except discord.app_commands.CommandLimitReached:
-                if guild_obj:
-                    # Active le scope guild sur le tree pour ce chargement
+            except discord.ext.commands.ExtensionFailed as e:
+                cause = e.__cause__
+                is_limit = isinstance(cause, discord.app_commands.CommandLimitReached)
+                if is_limit and guild_obj:
                     self.tree.guild_scope = guild_obj
                     try:
                         await self.load_extension(cog)
@@ -160,8 +161,10 @@ class DiscordBot(commands.Bot):
                         logger.error(f"❌ Erreur chargement guild {cog}: {eg}")
                     finally:
                         self.tree.guild_scope = None
-                else:
+                elif is_limit:
                     logger.warning(f"⚠️ Cog ignoré (limite 100 slash, GUILD_ID non défini): {cog}")
+                else:
+                    logger.error(f"❌ Erreur chargement {cog}: {e}")
             except Exception as e:
                 logger.error(f"❌ Erreur chargement {cog}: {e}")
 
