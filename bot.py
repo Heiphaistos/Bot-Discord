@@ -159,6 +159,12 @@ class DiscordBot(commands.Bot):
                         loaded_guild += 1
                         self._guild_cogs.append(cog)
                         logger.info(f"✅ Cog guild ({Config.GUILD_ID}): {cog}")
+                    except discord.ext.commands.ExtensionFailed as eg:
+                        cause_g = eg.__cause__
+                        if isinstance(cause_g, discord.app_commands.CommandLimitReached):
+                            logger.warning(f"⚠️ Cog ignoré (limite 100 guild atteinte): {cog}")
+                        else:
+                            logger.error(f"❌ Erreur chargement guild {cog}: {eg}")
                     except Exception as eg:
                         logger.error(f"❌ Erreur chargement guild {cog}: {eg}")
                     finally:
@@ -183,9 +189,11 @@ class DiscordBot(commands.Bot):
         if Config.GUILD_ID:
             try:
                 guild_obj = discord.Object(id=Config.GUILD_ID)
-                self.tree.copy_global_to(guild=guild_obj)
+                # No copy_global_to: global commands appear in all guilds natively.
+                # copy_global_to would push 92 globals into the guild bucket,
+                # hitting the 100 guild-specific command limit at sync time.
                 synced_guild = await self.tree.sync(guild=guild_obj)
-                logger.info(f"🔄 {len(synced_guild)} commandes synchronisées sur guild {Config.GUILD_ID}")
+                logger.info(f"🔄 {len(synced_guild)} commandes guild synchronisées sur guild {Config.GUILD_ID}")
             except Exception as e:
                 logger.error(f"❌ Erreur sync guild: {e}")
     
