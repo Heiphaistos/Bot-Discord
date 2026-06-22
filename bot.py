@@ -171,17 +171,29 @@ class DiscordBot(commands.Bot):
     async def on_ready(self):
         """Événement de connexion réussie"""
         self.startup_time = discord.utils.utcnow()
-        
+
         logger.info(f"🤖 {self.user} connecté sur {len(self.guilds)} serveur(s)")
         logger.info(f"📊 {len(self.users)} utilisateurs visibles")
-        
+
+        # Sync guilds et membres en DB pour les stats web
+        try:
+            async with aiosqlite.connect(db_manager.db_path) as db:
+                for guild in self.guilds:
+                    await db.execute(
+                        "INSERT OR IGNORE INTO guilds (id, name, owner_id) VALUES (?, ?, ?)",
+                        (guild.id, guild.name, guild.owner_id)
+                    )
+                await db.commit()
+        except Exception as e:
+            logger.error(f"Erreur sync guilds on_ready: {e}")
+
         # Définir le statut
         activity = discord.Activity(
             type=discord.ActivityType.watching,
             name=f"{len(self.guilds)} serveurs | /help"
         )
         await self.change_presence(activity=activity)
-        
+
         bot_logger.logger.info("Bot démarré avec succès")
     
     async def on_guild_join(self, guild):
