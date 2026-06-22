@@ -1,332 +1,157 @@
-# 🤖 Bot Discord RSSDI
+<div align="center">
+  <h1>🤖 Bot Discord RSSDI</h1>
+  <p><strong>Bot Discord Python complet pour diffuser les articles RSSDI et gérer une communauté avec économie, modération, jeux et tickets.</strong></p>
 
-Bot Discord multifonction complet avec économie, modération, jeux, tickets, logs et bien plus encore !
+  ![Version](https://img.shields.io/badge/version-1.0.0-blue)
+  ![Stack](https://img.shields.io/badge/stack-Python%203%20%2B%20discord.py%20%2B%20Docker-purple)
+  ![Status](https://img.shields.io/badge/status-production-green)
+  ![Repo](https://img.shields.io/badge/repo-Heiphaistos%2FBot--Discord--RSSDI-gray?logo=github)
+</div>
 
-## 🚀 Fonctionnalités
+---
 
-### 💰 Système d'Économie
-- `/balance` - Affiche ton solde ou celui d'un autre utilisateur
-- `/daily` - Récupère tes pièces quotidiennes
-- `/work` - Travaille pour gagner des pièces
-- `/crime` - Tente un crime (risqué mais lucratif)
-- `/rob` - Vole les pièces d'un autre utilisateur
-- `/give` - Donne des pièces à quelqu'un
-- `/leaderboard` - Classement des plus riches
-- `/shop` - Boutique du serveur
-- `/gamble` - Joue à pile ou face
+## 📋 Description
+
+Bot Discord self-hosted développé en Python pour la communauté RSSDI. Il automatise la publication des flux RSS dans des salons configurés et embarque un ensemble complet de fonctionnalités communautaires : économie, modération, jeux, tickets, logs avancés, giveaways et reaction-roles.
+
+**Repo GitHub :** [Heiphaistos/Bot-Discord-RSSDI](https://github.com/Heiphaistos/Bot-Discord-RSSDI)
+
+---
+
+## ✨ Fonctionnalités
+
+### 📡 RSS & RSSDI
+- Abonnement aux flux RSS via l'API RSSDI
+- Publication automatique dans des salons Discord configurés
+- Détection des nouveaux articles et notification en temps réel
+
+### 💰 Économie
+- Solde, pièces quotidiennes, travail, crime, vol entre membres
+- Classement, boutique, pari (pile ou face)
 
 ### 🛡️ Modération
-- `/kick` - Expulse un membre
-- `/ban` - Bannit un membre
-- `/unban` - Débannit un utilisateur
-- `/timeout` - Met un membre en timeout
-- `/untimeout` - Retire le timeout
-- `/warn` - Avertit un membre
-- `/warnings` - Affiche les avertissements
-- `/clearwarnings` - Efface les avertissements
-- `/automod` - Active/désactive l'auto-modération
+- Kick, ban, unban, timeout, avertissements, auto-modération
+- Commandes slash Discord (/) — interface moderne
 
 ### 🎮 Jeux
-- `/rps` - Pierre-papier-ciseaux
-- `/guess` - Devine le nombre
-- `/trivia` - Questions de culture générale
-- `/8ball` - Boule magique 8
-- `/reaction_duel` - Duel de réaction
-- `/game_stats` - Statistiques de jeu
-- `/higher_lower` - Devine si la carte est plus haute ou plus basse
-- `/word_chain` - Jeu de chaîne de mots
+- Pierre-papier-ciseaux, devinette, trivia, boule 8, duel de réaction
+- Chaîne de mots, plus-haut/plus-bas
 
-### 🎫 Système de Tickets
-- `/ticket_setup` - Configure le système de tickets
-- `/ticket_create` - Crée un ticket de support
-- `/ticket_close` - Ferme un ticket
-- `/ticket_add` - Ajoute un membre à un ticket
-- `/ticket_list` - Liste tous les tickets ouverts
+### 🎫 Tickets de support
+- Création, gestion, fermeture de tickets par canal dédié
 
-### 👋 Bienvenue & Au Revoir
-- `/welcome_setup` - Configure les messages de bienvenue
-- `/goodbye_setup` - Configure les messages d'au revoir
-- `/welcome_toggle` - Active/désactive la bienvenue
-- `/goodbye_toggle` - Active/désactive l'au revoir
-- `/welcome_test` - Teste le message de bienvenue
+### 📝 Logs avancés
+- Messages supprimés/édités, bans, rôles, canaux — tout tracé
 
-### 📝 Logs Avancés
-- `/log_setup` - Configure le canal de logs
-- `/log_disable` - Désactive les logs
-- Logs automatiques :
-  - Messages supprimés/édités
-  - Membres bannis/expulsés
-  - Modifications de rôles
-  - Création/suppression de canaux
-  - Et plus encore...
+### 🎉 Extras
+- Giveaways, reaction-roles, sondages, rappels, notes modération
+- Outils : Base64, hash, Morse, QR code, UUID, timestamp Discord
 
-### ℹ️ Commandes d'Information
-- `/userinfo` - Informations sur un utilisateur
-- `/serverinfo` - Informations sur le serveur
-- `/roleinfo` - Informations sur un rôle
-- `/avatar` - Affiche l'avatar d'un utilisateur
-- `/channelinfo` - Informations sur un canal
+---
 
-### 📊 Sondages
-- `/poll` - Crée un sondage (2-5 options)
-- `/poll_results` - Affiche les résultats
-- `/poll_end` - Termine un sondage
+## 🛠️ Stack technique
 
-### ⏰ Rappels
-- `/remind` - Programme un rappel
-- `/reminders_list` - Liste tes rappels actifs
-- `/reminder_delete` - Supprime un rappel
+| Composant | Technologie |
+|-----------|-------------|
+| Langage | Python 3.10+ |
+| Bot framework | discord.py (slash commands) |
+| Base de données | SQLite (automatique au premier lancement) |
+| Interface web | Flask (dashboard admin optionnel, port 5000) |
+| Déploiement | Docker + docker-compose |
 
-### 🎭 Reaction-Roles
-- `/reactionrole_add` - Ajoute un reaction-role
-- `/reactionrole_remove` - Retire un reaction-role
-- `/reactionrole_list` - Liste les reaction-roles
-- `/reactionrole_panel` - Crée un panneau de reaction-roles
+---
 
-### 🎉 Giveaways
-- `/giveaway_start` - Démarre un giveaway
-- `/giveaway_end` - Termine un giveaway immédiatement
-- `/giveaway_reroll` - Tire de nouveaux gagnants
+## 📁 Structure
 
-### 📋 Notes sur les Utilisateurs
-- `/note_add` - Ajoute une note sur un utilisateur
-- `/note_list` - Liste les notes d'un utilisateur
-- `/note_delete` - Supprime une note
-- `/note_clear` - Efface toutes les notes d'un utilisateur
-- `/note_search` - Recherche des notes par mot-clé
-
-### 🎪 Commandes Fun
-- `/truth_or_dare` - Vérité ou action
-- `/would_you_rather` - Tu préfères...
-- `/ship` - Calculateur de compatibilité
-- `/compliment` - Génère un compliment
-- `/roast` - Génère une vanne
-- `/membercount` - Nombre de membres
-- `/random_member` - Sélectionne un membre au hasard
-
-### 🔧 Utilitaires Avancés
-- `/ascii` - Générateur d'art ASCII
-- `/base64` - Encodeur/décodeur Base64
-- `/hash` - Hachage MD5/SHA256
-- `/reverse` - Inverse un texte
-- `/leet` - Convertit en l33t speak
-- `/morse` - Convertit en code Morse
-- `/password` - Générateur de mot de passe sécurisé
-- `/uuid` - Générateur d'UUID
-- `/color` - Générateur de couleur aléatoire
-- `/convert_temp` - Conversion de température
-- `/calculate_age` - Calculateur d'âge
-- `/math` - Résolveur d'expressions mathématiques
-- `/timestamp` - Générateur de timestamp Discord
-- `/countdown` - Compte à rebours
-- `/analyze_text` - Analyse de texte
-- `/qrcode` - Générateur de QR code
-- `/flip` - Simulateur de pile ou face
-- `/random_choice` - Sélecteur aléatoire
-
-### 🎯 Commandes Globales
-- `/help` - Affiche l'aide du bot
-- `/ping` - Affiche la latence
-- `/botinfo` - Informations sur le bot
-
-## 📦 Installation
-
-### Prérequis
-- Python 3.8 ou supérieur
-- pip (gestionnaire de paquets Python)
-
-### Étapes d'installation
-
-1. **Cloner le repository**
-   ```bash
-   git clone <url-du-repo>
-   cd Bot-Discord-RSSDI
-   ```
-
-2. **Installer les dépendances**
-   ```bash
-   pip install -r requirements_new.txt
-   ```
-
-3. **Configuration**
-   - Copier `.env.example` vers `.env`
-   - Éditer `.env` et remplir les valeurs requises :
-     ```env
-     DISCORD_TOKEN=votre_token_discord
-     COMMAND_PREFIX=!
-     ```
-
-4. **Lancer le bot**
-   ```bash
-   python bot.py
-   ```
-
-## ⚙️ Configuration
-
-### Variables d'environnement (.env)
-
-#### Obligatoire
-- `DISCORD_TOKEN` - Token du bot Discord
-
-#### Optionnel
-- `COMMAND_PREFIX` - Préfixe des commandes (défaut: `!`)
-- `DATABASE_URL` - URL de la base de données (défaut: SQLite local)
-- `INTERFACE_SECRET` - Clé secrète pour l'interface web
-- `INTERFACE_PASSWORD` - Mot de passe admin de l'interface web
-- `INTERFACE_HOST` - Host de l'interface web (défaut: `127.0.0.1`)
-- `INTERFACE_PORT` - Port de l'interface web (défaut: `5000`)
-
-#### Fonctionnalités
-- `ENABLE_RSS` - Activer le module RSS (défaut: `true`)
-- `ENABLE_ECONOMY` - Activer l'économie (défaut: `true`)
-- `ENABLE_GAMES` - Activer les jeux (défaut: `true`)
-- `ENABLE_AUTOMOD` - Activer l'auto-modération (défaut: `true`)
-
-#### Limites
-- `MAX_WARNINGS` - Nombre d'avertissements avant ban (défaut: `5`)
-- `MAX_XP_PER_MESSAGE` - XP maximum par message (défaut: `5`)
-- `COOLDOWN_SECONDS` - Cooldown général (défaut: `60`)
-
-#### Économie
-- `DAILY_COINS` - Pièces quotidiennes (défaut: `100`)
-- `WORK_COINS_MIN` - Pièces minimales pour /work (défaut: `10`)
-- `WORK_COINS_MAX` - Pièces maximales pour /work (défaut: `50`)
-
-## 📊 Base de Données
-
-Le bot utilise SQLite par défaut. La base de données est automatiquement créée au premier lancement.
-
-### Tables principales
-- `guilds` - Serveurs Discord
-- `users` - Utilisateurs
-- `members` - Relation utilisateurs-serveurs (XP, pièces, etc.)
-- `tickets` - Système de tickets
-- `polls` - Sondages
-- `reminders` - Rappels
-- `giveaways` - Concours
-- `user_notes` - Notes sur les utilisateurs
-- Et bien d'autres...
-
-## 🔒 Sécurité
-
-Le bot inclut plusieurs couches de sécurité :
-- Validation des entrées utilisateur
-- Filtrage de contenu
-- Rate limiting
-- Système de permissions
-- Calculateur mathématique sécurisé (pas d'eval())
-- Sessions sécurisées pour l'interface web
-
-## 🌐 Interface Web
-
-Une interface web est disponible pour gérer le bot :
-- Dashboard avec statistiques
-- Gestion de l'économie
-- Consultation des logs de modération
-- Configuration des serveurs
-- Et plus encore...
-
-Accès : `http://localhost:5000` (par défaut)
-
-## 📝 Logs
-
-Le bot génère plusieurs types de logs :
-- `logs/bot.log` - Logs généraux (format texte)
-- `logs/bot.json` - Logs structurés (format JSON)
-- Logs en base de données pour l'activité des utilisateurs
-
-## 🤝 Contribution
-
-Les contributions sont les bienvenues ! N'hésitez pas à :
-- Signaler des bugs
-- Proposer de nouvelles fonctionnalités
-- Améliorer la documentation
-- Soumettre des pull requests
-
-## 📜 Licence
-
-Ce projet est sous licence MIT. Voir le fichier LICENSE pour plus de détails.
-
-## 🆘 Support
-
-Pour obtenir de l'aide :
-1. Consultez la documentation ci-dessus
-2. Utilisez `/help` dans Discord
-3. Ouvrez une issue sur GitHub
-
-## 🎯 Roadmap
-
-Fonctionnalités prévues :
-- [ ] Système de niveaux avec récompenses de rôles automatiques
-- [ ] Module de musique (lecture YouTube/Spotify)
-- [ ] Système de backup automatique
-- [ ] API REST pour l'intégration externe
-- [ ] Commandes de recherche (Wikipedia, Google)
-- [ ] Système de suggestions amélioré
-- [ ] Dashboard web amélioré avec graphiques
-
-## 👨‍💻 Développement
-
-### Structure du projet
 ```
 Bot-Discord-RSSDI/
 ├── bot.py              # Point d'entrée principal
 ├── config.py           # Configuration centralisée
-├── database.py         # Gestionnaire de base de données
+├── database.py         # Gestionnaire SQLite
 ├── cogs/               # Modules du bot
-│   ├── economy.py
-│   ├── moderation.py
-│   ├── games.py
-│   ├── tickets.py
-│   ├── welcome.py
-│   ├── logging.py
-│   ├── info.py
-│   ├── polls.py
-│   ├── reminders.py
+│   ├── economy.py      # Économie
+│   ├── moderation.py   # Modération
+│   ├── games.py        # Jeux
+│   ├── tickets.py      # Tickets de support
+│   ├── welcome.py      # Bienvenue / Au revoir
+│   ├── logging.py      # Logs avancés
+│   ├── polls.py        # Sondages
+│   ├── reminders.py    # Rappels
 │   ├── reactionroles.py
 │   ├── giveaways.py
-│   ├── notes.py
-│   └── ...
-├── utils/              # Utilitaires
+│   └── notes.py
+├── utils/
 │   ├── logger.py
 │   └── security.py
-├── templates/          # Templates HTML (interface web)
-└── data/              # Données (base de données, logs)
-```
-
-### Tests
-```bash
-pytest
-```
-
-### Formatage du code
-```bash
-black .
-isort .
-```
-
-## ⚡ Performance
-
-Le bot est optimisé pour :
-- Gérer plusieurs serveurs simultanément
-- Traiter des milliers de commandes par jour
-- Base de données indexée pour des requêtes rapides
-- Opérations asynchrones avec asyncio
-- Rate limiting pour éviter les abus
-
-## 🔧 Maintenance
-
-### Backup de la base de données
-```bash
-cp data/bot.db data/bot.db.backup
-```
-
-### Mise à jour
-```bash
-git pull
-pip install -r requirements_new.txt --upgrade
+├── templates/          # Interface web Flask
+├── data/               # Base de données + logs
+├── requirements_new.txt
+├── Dockerfile
+└── docker-compose.yml
 ```
 
 ---
 
-**Fait avec ❤️ pour la communauté Discord**
+## 🚀 Déploiement
+
+### Prérequis
+
+- Python 3.10+
+- Docker + docker-compose (recommandé en prod)
+
+### Installation locale
+
+```bash
+git clone https://github.com/Heiphaistos/Bot-Discord-RSSDI
+cd Bot-Discord-RSSDI
+pip install -r requirements_new.txt
+cp .env.example .env
+# Renseigner DISCORD_TOKEN
+python bot.py
+```
+
+### Docker (production)
+
+```bash
+docker compose up -d
+# Logs
+docker compose logs -f bot
+```
+
+### Variables d'environnement (`.env`)
+
+| Variable | Requis | Description |
+|----------|--------|-------------|
+| `DISCORD_TOKEN` | Oui | Token du bot Discord |
+| `COMMAND_PREFIX` | Non | Préfixe commandes (défaut: `!`) |
+| `DATABASE_URL` | Non | URL SQLite (défaut: local) |
+| `ENABLE_RSS` | Non | Activer le module RSS (défaut: `true`) |
+| `ENABLE_ECONOMY` | Non | Activer l'économie (défaut: `true`) |
+| `DAILY_COINS` | Non | Pièces quotidiennes (défaut: `100`) |
+| `MAX_WARNINGS` | Non | Avertissements avant ban (défaut: `5`) |
+| `INTERFACE_PORT` | Non | Port dashboard web (défaut: `5000`) |
+
+### Mise à jour
+
+```bash
+git pull
+pip install -r requirements_new.txt --upgrade
+# ou Docker :
+docker compose pull && docker compose up -d --build
+```
+
+---
+
+## 🔒 Sécurité
+
+- Validation des entrées utilisateur sur toutes les commandes
+- Rate limiting intégré (cooldown configurable)
+- Calculateur mathématique sécurisé (sans `eval()`)
+- Système de permissions Discord respecté
+- Sessions Flask sécurisées pour l'interface web
+
+---
+
+## 📝 Licence
+
+MIT — © 2026 Heiphaistos
