@@ -9,6 +9,7 @@ from typing import Optional
 
 import discord
 from discord.ext import commands
+from discord.utils import MISSING
 import aiosqlite
 
 from config import Config
@@ -27,9 +28,10 @@ class GuildFallbackTree(discord.app_commands.CommandTree):
         super().__init__(*args, **kwargs)
         self.guild_scope: Optional[discord.Object] = None
 
-    def add_command(self, command, *, guild=None, guilds=(), override=False):
-        if self.guild_scope is not None and guild is None and not guilds:
+    def add_command(self, command, /, *, guild=MISSING, guilds=MISSING, override=False):
+        if self.guild_scope is not None and guild is MISSING and guilds is MISSING:
             guild = self.guild_scope
+            guilds = MISSING
         return super().add_command(command, guild=guild, guilds=guilds, override=override)
 
 
