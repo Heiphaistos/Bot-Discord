@@ -604,6 +604,30 @@ def api_stats():
         logger.error(f"Erreur API stats: {e}")
         return jsonify({'error': 'Erreur serveur'}), 500
 
+@app.route('/health')
+def health():
+    return jsonify({'ok': True, 'app': 'bot-discord', 'version': '1.0.0'})
+
+@app.route('/api/internal/status')
+def internal_status():
+    """Endpoint interne pour ForgeHook — protégé par BOT_INTERNAL_SECRET."""
+    auth = request.headers.get('Authorization', '')
+    expected = f"Bearer {Config.BOT_INTERNAL_SECRET}"
+    if auth != expected:
+        return jsonify({'error': 'Unauthorized'}), 401
+    try:
+        stats = _compute_stats()
+        return jsonify({
+            'online': True,
+            'guilds': stats['guilds'],
+            'users': stats['users'],
+            'commands_today': stats['commands_today'],
+            'uptime': stats['uptime'],
+        })
+    except Exception as e:
+        logger.error(f"Erreur internal/status: {e}")
+        return jsonify({'online': False, 'error': str(e)}), 500
+
 @app.errorhandler(404)
 def not_found(error):
     return render_template('error.html', code=404, message="Page non trouvée", description="La page que vous cherchez n'existe pas."), 404

@@ -1,0 +1,26 @@
+services:
+  bot-discord:
+    build:
+      context: ..
+      dockerfile: docker/Dockerfile
+    env_file: ../.env
+    ports:
+      - "127.0.0.1:3031:5000"
+    volumes:
+      - bot-data:/app/data
+      - bot-logs:/app/logs
+    healthcheck:
+      test: ["CMD", "wget", "-qO-", "http://127.0.0.1:5000/health"]
+      interval: 30s
+      timeout: 5s
+      retries: 3
+      start_period: 20s
+    restart: unless-stopped
+
+networks:
+  default:
+    driver: bridge
+
+volumes:
+  bot-data:
+  bot-logs:

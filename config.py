@@ -61,6 +61,11 @@ class Config:
     DAILY_COINS = int(os.getenv("DAILY_COINS", "100"))
     WORK_COINS_MIN = int(os.getenv("WORK_COINS_MIN", "10"))
     WORK_COINS_MAX = int(os.getenv("WORK_COINS_MAX", "50"))
+
+    # ForgeHook integration
+    FORGEHOOK_URL = os.getenv("FORGEHOOK_URL", "")
+    FORGEHOOK_API_TOKEN = os.getenv("FORGEHOOK_API_TOKEN", "")
+    BOT_INTERNAL_SECRET = _require_env("BOT_INTERNAL_SECRET")
     
     @classmethod
     def validate(cls) -> bool:

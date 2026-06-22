@@ -133,7 +133,10 @@ class DiscordBot(commands.Bot):
             'cogs.configuration',
 
             # Utilitaires supplémentaires
-            'cogs.utilities_extra'
+            'cogs.utilities_extra',
+
+            # Intégrations externes
+            'cogs.forgehook_integration',
         ]
         
         loaded_count = 0
