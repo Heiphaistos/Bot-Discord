@@ -90,17 +90,15 @@ class DiscordBot(commands.Bot):
             raise
     
     async def _load_cogs(self):
-        """Charge tous les cogs"""
+        """Charge tous les cogs. Les cogs qui dépassent la limite globale de 100
+        commandes slash sont enregistrés en guild-scope si GUILD_ID est défini."""
         cogs = [
-            # Modules de base
             'cogs.economy',
             'cogs.moderation',
             'cogs.games',
             'cogs.legacy_commands',
             'cogs.advanced_utils',
             'cogs.fun_extras',
-
-            # Systèmes de gestion
             'cogs.tickets',
             'cogs.welcome',
             'cogs.logging',
@@ -110,53 +108,66 @@ class DiscordBot(commands.Bot):
             'cogs.giveaways',
             'cogs.notes',
             'cogs.suggestions_system',
-
-            # Information et statistiques
             'cogs.info',
             'cogs.statistics',
             'cogs.leveling',
-
-            # Divertissement et social
             'cogs.entertainment',
             'cogs.social',
             'cogs.minigames',
-
-            # Musique et médias
             'cogs.music',
             'cogs.images',
-
-            # Recherche et API
             'cogs.search',
-
-            # Gestion serveur et configuration
             'cogs.server_management',
             'cogs.configuration',
-
-            # Utilitaires supplémentaires
             'cogs.utilities_extra',
-
-            # Intégrations externes
             'cogs.forgehook_integration',
         ]
-        
-        loaded_count = 0
+
+        guild_obj = discord.Object(id=Config.GUILD_ID) if Config.GUILD_ID else None
+        self._guild_cogs: list[str] = []
+
+        loaded_global = 0
+        loaded_guild = 0
         for cog in cogs:
             try:
                 await self.load_extension(cog)
-                loaded_count += 1
-                logger.info(f"✅ Cog chargé: {cog}")
+                loaded_global += 1
+                logger.info(f"✅ Cog global: {cog}")
+            except discord.app_commands.CommandLimitReached:
+                if guild_obj:
+                    try:
+                        # Enregistre les commandes de ce cog en scope guild
+                        await self.load_extension(cog)
+                        for cmd in self.tree.get_commands():
+                            self.tree.add_command(cmd, guild=guild_obj, override=True)
+                        loaded_guild += 1
+                        self._guild_cogs.append(cog)
+                        logger.info(f"✅ Cog guild: {cog}")
+                    except Exception as eg:
+                        logger.error(f"❌ Erreur chargement guild {cog}: {eg}")
+                else:
+                    logger.warning(f"⚠️ Cog ignoré (limite 100 slash, GUILD_ID non défini): {cog}")
             except Exception as e:
                 logger.error(f"❌ Erreur chargement {cog}: {e}")
-        
-        logger.info(f"📦 {loaded_count}/{len(cogs)} cogs chargés")
-    
+
+        logger.info(f"📦 {loaded_global} cogs globaux + {loaded_guild} cogs guild chargés")
+
     async def _sync_commands(self):
-        """Synchronise les commandes slash"""
+        """Synchronise les commandes slash (global + guild si GUILD_ID configuré)."""
         try:
             synced = await self.tree.sync()
-            logger.info(f"🔄 {len(synced)} commandes slash synchronisées")
+            logger.info(f"🔄 {len(synced)} commandes globales synchronisées")
         except Exception as e:
-            logger.error(f"❌ Erreur synchronisation commandes: {e}")
+            logger.error(f"❌ Erreur sync globale: {e}")
+
+        if Config.GUILD_ID:
+            try:
+                guild_obj = discord.Object(id=Config.GUILD_ID)
+                self.tree.copy_global_to(guild=guild_obj)
+                synced_guild = await self.tree.sync(guild=guild_obj)
+                logger.info(f"🔄 {len(synced_guild)} commandes synchronisées sur guild {Config.GUILD_ID}")
+            except Exception as e:
+                logger.error(f"❌ Erreur sync guild: {e}")
     
     async def on_ready(self):
         """Événement de connexion réussie"""

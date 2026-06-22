@@ -66,6 +66,9 @@ class Config:
     FORGEHOOK_URL = os.getenv("FORGEHOOK_URL", "")
     FORGEHOOK_API_TOKEN = os.getenv("FORGEHOOK_API_TOKEN", "")
     BOT_INTERNAL_SECRET = _require_env("BOT_INTERNAL_SECRET")
+
+    # Guild ID pour sync commandes guild-scope (dépasse la limite de 100 global)
+    GUILD_ID = int(os.getenv("GUILD_ID", "0")) or None
     
     @classmethod
     def validate(cls) -> bool:
