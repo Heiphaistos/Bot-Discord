@@ -106,7 +106,7 @@ class StatisticsCog(commands.Cog):
         await interaction.response.send_message("⏰ Heures de pointe")
 
     @app_commands.command(name="bot_usage", description="Utilisation du bot")
-    async def bot_usage(self, interaction: discord.Interaction):
+    async def usage_stats(self, interaction: discord.Interaction):
         await interaction.response.send_message("🤖 Utilisation du bot")
 
     @app_commands.command(name="command_stats", description="Stats des commandes")

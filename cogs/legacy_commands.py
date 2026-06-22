@@ -71,7 +71,7 @@ class LegacyCommandsCog(commands.Cog):
 
     # === COMMANDES D'INFORMATION ===
     
-    @app_commands.command(name="ping", description="Affiche la latence du bot")
+    @app_commands.command(name="ping_legacy", description="Latence du bot (legacy)")
     async def ping(self, interaction: discord.Interaction):
         """Ping du bot"""
         await interaction.response.send_message(f"🏓 Pong ! Latence: {round(self.bot.latency * 1000)}ms")

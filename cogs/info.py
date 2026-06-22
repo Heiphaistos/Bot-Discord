@@ -211,7 +211,7 @@ class InfoCog(commands.Cog):
 
         await interaction.response.send_message(embed=embed)
 
-    @app_commands.command(name="avatar", description="Affiche l'avatar d'un utilisateur")
+    @app_commands.command(name="avatar_user", description="Affiche l'avatar d'un utilisateur")
     async def avatar(self, interaction: discord.Interaction, membre: Optional[discord.Member] = None):
         """Affiche l'avatar d'un utilisateur"""
         target = membre or interaction.user

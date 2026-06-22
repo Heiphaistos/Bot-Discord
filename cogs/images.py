@@ -49,7 +49,7 @@ class ImagesCog(commands.Cog):
     async def rotate(self, interaction: discord.Interaction, angle: int):
         await interaction.response.send_message(f"🔄 Rotation de {angle}°")
 
-    @app_commands.command(name="flip", description="Retourne une image")
+    @app_commands.command(name="flip_image", description="Retourne une image")
     async def flip(self, interaction: discord.Interaction, direction: str):
         await interaction.response.send_message(f"↕️ Image retournée ({direction})")
 
